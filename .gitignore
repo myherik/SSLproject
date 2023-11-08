@@ -1,2 +1,5 @@
 .DS_Store
 8026660
+images
+__pycache__
+.ipynb_checkpoints
