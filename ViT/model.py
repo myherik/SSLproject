@@ -114,7 +114,15 @@ class ClassificationHead(nn.Sequential):
         super().__init__(
             Reduce('b n e -> b e', reduction='mean'),
             nn.LayerNorm(emb_size),
-            nn.Linear(emb_size, n_classes))
+            nn.Linear(emb_size, n_classes),
+            nn.Softmax(dim=-1))
+        
+class RegressionHead(nn.Sequential):
+    def __init__(self, emb_size: int = 768):
+        super().__init__(
+            Reduce('b n e -> b e', reduction='mean'),
+            nn.LayerNorm(emb_size),
+            nn.Linear(emb_size, 1))
 
 
 class ViT(nn.Sequential):
@@ -129,5 +137,6 @@ class ViT(nn.Sequential):
         super().__init__(
             PatchEmbedding(in_channels, patch_size, emb_size, img_size),
             TransformerEncoder(depth, emb_size=emb_size, **kwargs),
-            ClassificationHead(emb_size, n_classes)
+            #ClassificationHead(emb_size, n_classes)
+
         )
