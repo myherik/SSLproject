@@ -14,4 +14,4 @@ class RotationPredictionDataset(torchvision.datasets.FashionMNIST):
         angle = torch.randint(0, 4, size=(1,)).item()  # 0, 1, 2, or 3
         rotated_image = transforms.functional.rotate(image, angle * 90)
         
-        return rotated_image, torch.tensor([float(angle)])
+        return rotated_image, angle

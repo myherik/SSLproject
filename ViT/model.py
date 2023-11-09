@@ -123,7 +123,8 @@ class RegressionHead(nn.Sequential):
         super().__init__(
             Reduce('b n e -> b e', reduction='mean'),
             nn.LayerNorm(emb_size),
-            nn.Linear(emb_size, 1))
+            nn.Linear(emb_size, 4),
+            nn.Softmax(dim=-1))
 
 class MaskedLearningHead(nn.Sequential):
     def __init__(self, emb_size: int = 768, n_classes: int = 1000):
