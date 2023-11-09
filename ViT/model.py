@@ -112,6 +112,7 @@ class TransformerEncoder(nn.Sequential):
 class ClassificationHead(nn.Sequential):
     def __init__(self, emb_size: int = 768, n_classes: int = 1000):
         super().__init__(
+            TransformerEncoder(2, emb_size=emb_size),
             Reduce('b n e -> b e', reduction='mean'),
             nn.LayerNorm(emb_size),
             nn.Linear(emb_size, n_classes),
@@ -123,6 +124,14 @@ class RegressionHead(nn.Sequential):
             Reduce('b n e -> b e', reduction='mean'),
             nn.LayerNorm(emb_size),
             nn.Linear(emb_size, 1))
+
+class MaskedLearningHead(nn.Sequential):
+    def __init__(self, emb_size: int = 768, n_classes: int = 1000):
+        super().__init__(
+            Reduce('b n e -> b e', reduction='mean'),
+            nn.LayerNorm(emb_size),
+            nn.Linear(emb_size, n_classes))
+
 
 
 class ViT(nn.Sequential):
