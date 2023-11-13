@@ -1,3 +1,12 @@
+"""
+model is based on the paper "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale"
+and the implementation from FrancescoSaverioZuppichini
+
+https://github.com/FrancescoSaverioZuppichini/ViT
+
+"""
+
+
 import torch
 import torch.nn.functional as F
 
@@ -117,7 +126,8 @@ class ClassificationHead(nn.Sequential):
             nn.LayerNorm(emb_size),
             nn.Linear(emb_size, n_classes),
             nn.Softmax(dim=-1))
-        
+
+
 class RegressionHead(nn.Sequential):
     def __init__(self, emb_size: int = 768):
         super().__init__(
@@ -125,14 +135,6 @@ class RegressionHead(nn.Sequential):
             nn.LayerNorm(emb_size),
             nn.Linear(emb_size, 4),
             nn.Softmax(dim=-1))
-
-class MaskedLearningHead(nn.Sequential):
-    def __init__(self, emb_size: int = 768, n_classes: int = 1000):
-        super().__init__(
-            Reduce('b n e -> b e', reduction='mean'),
-            nn.LayerNorm(emb_size),
-            nn.Linear(emb_size, n_classes))
-
 
 
 class ViT(nn.Sequential):
@@ -146,7 +148,5 @@ class ViT(nn.Sequential):
                 **kwargs):
         super().__init__(
             PatchEmbedding(in_channels, patch_size, emb_size, img_size),
-            TransformerEncoder(depth, emb_size=emb_size, **kwargs),
-            #ClassificationHead(emb_size, n_classes)
-
+            TransformerEncoder(depth, emb_size=emb_size, **kwargs)
         )
